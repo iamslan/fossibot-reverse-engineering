@@ -1,0 +1,95 @@
+rest:
+  - resource: http://127.0.0.1:3000/devices/XXXXXXXXXXXX
+    scan_interval: 2
+    sensor:
+      - name : "Fossibot XXXXX Status"
+        unique_id: "fossibot_xxxxx_status"
+        value_template: '{{ value_json.mqtt_state }}'
+      - name : "Fossibot XXXXX Soc"
+        unique_id: "fossibot_xxxxx_soc"
+        unit_of_measurement: "%"
+        value_template: '{{ value_json.soc | float }}'
+      - name : "Fossibot XXXXX Total Input"
+        unique_id: "fossibot_xxxxx_totalInput"
+        unit_of_measurement: "W"
+        value_template: '{{ value_json.totalInput | float }}'
+      - name : "Fossibot XXXXX Total Output"
+        unique_id: "fossibot_xxxxx_totalOutput"
+        unit_of_measurement: "W"
+        value_template: '{{ value_json.totalOutput | float }}'
+      - name : "Fossibot XXXXX USB Output"
+        unique_id: "fossibot_xxxxx_usbOutput"
+        value_template: '{{ value_json.usbOutput }}'
+      - name : "Fossibot XXXXX DC Output"
+        unique_id: "fossibot_xxxxx_dcOutput"
+        value_template: '{{ value_json.dcOutput }}'
+      - name : "Fossibot XXXXX AC Output"
+        unique_id: "fossibot_xxxxx_acOutput"
+        value_template: '{{ value_json.acOutput }}'
+      - name : "Fossibot XXXXX LED Output"
+        unique_id: "fossibot_xxxxx_ledOutput"
+        value_template: '{{ value_json.ledOutput }}'
+      - name : "Fossibot XXXXX Maximum Charging Current"
+        unique_id: "fossibot_xxxxx_maximumChargingCurrent"
+        unit_of_measurement: "A"
+        value_template: '{{ value_json.maximumChargingCurrent }}'
+      - name : "Fossibot XXXXX AC Silent Charging"
+        unique_id: "fossibot_xxxxx_acSilentCharging"
+        value_template: '{{ value_json.acSilentCharging }}'
+      - name : "Fossibot XXXXX USB Standby Time"
+        unique_id: "fossibot_xxxxx_usbStandbyTime"
+        unit_of_measurement: "minutes"
+        value_template: '{{ value_json.usbStandbyTime | int }}'
+      - name : "Fossibot XXXXX AC Standby Time"
+        unique_id: "fossibot_xxxxx_acStandbyTime"
+        unit_of_measurement: "minutes"
+        value_template: '{{ value_json.acStandbyTime | int }}'
+      - name : "Fossibot XXXXX DC Standby Time"
+        unique_id: "fossibot_xxxxx_dcStandbyTime"
+        unit_of_measurement: "minutes"
+        value_template: '{{ value_json.dcStandbyTime | int }}'
+      - name : "Fossibot XXXXX Screen Rest Time"
+        unique_id: "fossibot_xxxxx_screenRestTime"
+        unit_of_measurement: "seconds"
+        value_template: '{{ value_json.screenRestTime | int }}'
+      - name : "Fossibot XXXXX Stop Charge After"
+        unique_id: "fossibot_xxxxx_stopChargeAfter"
+        unit_of_measurement: "minutes"
+        value_template: '{{ value_json.stopChargeAfter | int }}'
+      - name : "Fossibot XXXXX Discharge Lower Limit"
+        unique_id: "fossibot_xxxxx_dischargeLowerLimit"
+        unit_of_measurement: "%"
+        value_template: '{{ value_json.dischargeLowerLimit / 10 }}'
+      - name : "Fossibot XXXXX AC Charging Upper Limit"
+        unique_id: "fossibot_xxxxx_acChargingUpperLimit"
+        unit_of_measurement: "%"
+        value_template: '{{ value_json.acChargingUpperLimit / 10 }}'
+      - name : "Fossibot XXXXX Whole Machine UnusedTime"
+        unique_id: "fossibot_xxxxx_wholeMachineUnusedTime"
+        unit_of_measurement: "minutes"
+        value_template: '{{ value_json.wholeMachineUnusedTime | int }}'
+rest_command:
+  set_fossibot_xxxxx_disable_usb_output:
+    url: http://127.0.0.1:3000/devices/24EC4A88D0BA/REGDisableUSBOutput
+  set_fossibot_xxxxx_enable_usb_output:
+    url: http://127.0.0.1:3000/devices/24EC4A88D0BA/REGEnableUSBOutput
+  set_fossibot_xxxxx_disable_dc_output:
+    url: http://127.0.0.1:3000/devices/24EC4A88D0BA/REGDisableDCOutput
+  set_fossibot_xxxxx_enable_dc_output:
+    url: http://127.0.0.1:3000/devices/24EC4A88D0BA/REGEnableDCOutput
+  set_fossibot_xxxxx_disable_ac_output:
+    url: http://127.0.0.1:3000/devices/24EC4A88D0BA/REGDisableACOutput
+  set_fossibot_xxxxx_enable_ac_output:
+    url: http://127.0.0.1:3000/devices/24EC4A88D0BA/REGEnableACOutput
+  set_fossibot_xxxxx_disable_led:
+    url: http://127.0.0.1:3000/devices/24EC4A88D0BA/REGDisableLED
+  set_fossibot_xxxxx_enable_led_always:
+    url: http://127.0.0.1:3000/devices/24EC4A88D0BA/REGEnableLEDAlways
+  set_fossibot_xxxxx_enable_led_sos:
+    url: http://127.0.0.1:3000/devices/24EC4A88D0BA/REGEnableLEDSOS
+  set_fossibot_xxxxx_enable_led_flash:
+    url: http://127.0.0.1:3000/devices/24EC4A88D0BA/REGEnableLEDFlash
+  set_fossibot_xxxxx_disable_ac_silent_charging:
+    url: http://127.0.0.1:3000/devices/24EC4A88D0BA/REGDisableACSilentCharging
+  set_fossibot_xxxxx_enable_ac_silent_charging:
+    url: http://127.0.0.1:3000/devices/24EC4A88D0BA/REGEnableACSilentCharging
