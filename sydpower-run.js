@@ -7,7 +7,7 @@ const crypto = require("crypto");
 const mqtt = require("mqtt");
 const express = require('express');
 const { sign, highLowToInt } = require('./sydpower-functions.js');
-const { REGRequestSettings, REGDisableUSBOutput, REGEnableUSBOutput, REGDisableDCOutput, REGEnableDCOutput, REGDisableACOutput, REGEnableACOutput,  REGDisableLED, REGEnableLEDAlways, REGEnableLEDFlash, REGEnableLEDSOS, REGDisableACSilentCharging, REGEnableACSilentCharging, REGDischargeLowerLimit, REGChargeUpperLimit, REGStopChargeAfter, REGMaxChargeCurrent, REGScreenRestTime, REGAcStandbyTime, REGDcStandbyTime, REGUsbStandbyTime, REGSleepTime } = require('./sydpower-registers.js');
+const REGISTERS = require('./sydpower-registers.js');
 
 // Endpoint
 const endpoint = "https://api.next.bspapp.com/client";
@@ -157,10 +157,10 @@ SydpowerConnector.prototype.connect = async function () {
     that.getDeviceData(mqttAccessTokenRequest.data.access_token, devicesIds, true);
 }
 
-SydpowerConnector.prototype.mqttPublish = function (client, deviceMac, message) {
+SydpowerConnector.prototype.mqttPublish = function (deviceMac, message) {
     const publishTopic = deviceMac+"/client/request/data";
-    client.publish(publishTopic, message, { qos: 1 }, (error) => {
-        console.log(`Published request settings to topic '${publishTopic}'`)
+    this.mqttClient.publish(publishTopic, message, { qos: 1 }, (error) => {
+        console.log(`Published ${message} to topic '${publishTopic}'`)
         if (error) {
             console.error(error)
         }
@@ -170,14 +170,14 @@ SydpowerConnector.prototype.mqttPublish = function (client, deviceMac, message) 
 SydpowerConnector.prototype.getDeviceData = function (accessToken, devicesMacs, debug = false) {
     const that = this;
     // Connect to fetch data
-    var client = mqtt.connect(mqttHost, {
+    that.mqttClient = mqtt.connect(mqttHost, {
         clientId,
         username: accessToken,
         password: password,
         clean: true,
         connectTimeout: 4000,
     });
-    client.on('connect', function () {
+    that.mqttClient.on('connect', function () {
         console.log(`Connected to MQTT broker!`);
         // MQTT topics
         const subscribeTopics = [];
@@ -186,14 +186,14 @@ SydpowerConnector.prototype.getDeviceData = function (accessToken, devicesMacs, 
             subscribeTopics.push(deviceMac+"/device/response/client/+");
         });    
         // Subscribe to get updates on status
-        client.subscribe(subscribeTopics, () => {
+        that.mqttClient.subscribe(subscribeTopics, () => {
             console.log(`Subscribed to topics '${subscribeTopics}'`)
         })   
         devicesMacs.forEach(deviceMac => {
-            that.mqttPublish(client, deviceMac, new Uint8Array(REGRequestSettings));
+            that.mqttPublish(deviceMac, new Uint8Array(REGISTERS["REGRequestSettings"]));
         });
     });
-    client.on('message', (topic, message) => {
+    that.mqttClient.on('message', (topic, message) => {
         console.log(`New message on topic '${topic}'`)
         const deviceMac = topic.split('/')[0];
         // message is an array of 8-bit unsigned integers
@@ -231,9 +231,33 @@ SydpowerConnector.prototype.getDeviceData = function (accessToken, devicesMacs, 
         console.table(that.devices);
     });
 
-    client.on('error', function (error) {
+    that.mqttClient.on('error', function (error) {
         console.log(error);
     });
+}
+
+SydpowerConnector.prototype.runCommand = async function (deviceId, command, value, res) {
+    var that = this;
+    if (REGISTERS[command]) {
+        if (that.mqttClient) {
+            var message;
+            if (typeof REGISTERS[command] == "function") {
+                message = REGISTERS[command](value);
+                setTimeout(function() {
+                    that.mqttPublish(deviceId, new Uint8Array(REGISTERS["REGRequestSettings"]));
+                }, 1000);
+            } else {
+                message = REGISTERS[command];
+            }
+            that.mqttPublish(deviceId, new Uint8Array(message));
+            res.json({ success: `Command ${command} sent`});
+        } else {
+            res.json({ error: 'MQTT not connected, cannot send commands.'});
+        }
+    } else {
+        res.json({ error: 'Command not found'});
+    }
+
 }
 
 SydpowerConnector.prototype.startWebserver = async function () {
@@ -245,6 +269,20 @@ SydpowerConnector.prototype.startWebserver = async function () {
     })
     app.get('/devices', function (req, res) {
         res.json(that.devices);
+    })
+    app.get('/devices/:deviceId', function (req, res) {
+        if (that.devices[req.params.deviceId]) {
+            res.json(that.devices[req.params.deviceId]);
+        } else {
+            res.json({ error: 'Device not found'});
+        }
+    })
+    app.get('/devices/:deviceId/:command', function (req, res) {
+        that.runCommand(req.params.deviceId, req.params.command, null, res);
+    })
+
+    app.get('/devices/:deviceId/:command/:value', function (req, res) {
+        that.runCommand(req.params.deviceId, req.params.command, req.params.value, res);
     })
 
     app.listen(3000);

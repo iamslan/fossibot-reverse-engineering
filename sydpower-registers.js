@@ -157,15 +157,15 @@ const REGEnableLEDSOS = getWriteModbus(REGISTER_MODBUS_ADDRESS, REGISTER_LED, 2)
 const REGEnableLEDFlash = getWriteModbus(REGISTER_MODBUS_ADDRESS, REGISTER_LED, 3);
 const REGDisableACSilentCharging = getWriteModbus(REGISTER_MODBUS_ADDRESS, REGISTER_AC_SILENT_CHARGING, 0);
 const REGEnableACSilentCharging = getWriteModbus(REGISTER_MODBUS_ADDRESS, REGISTER_AC_SILENT_CHARGING, 1);
-function REGDischargeLowerLimit(value) { getWriteModusValue(REGISTER_DISCHARGE_LIMIT, value); }
-function REGChargeUpperLimit(value) { getWriteModusValue(REGISTER_CHARGING_LIMIT, value); }
-function REGStopChargeAfter(value) { getWriteModusValue(REGISTER_STOP_CHARGE_AFTER, value); }
-function REGMaxChargeCurrent(value) { getWriteModusValue(REGISTER_MAXIMUM_CHARGING_CURRENT, value); }
-function REGScreenRestTime(value) { getWriteModusValue(REGISTER_SCREEN_REST_TIME, value); }
-function REGAcStandbyTime(value) { getWriteModusValue(REGISTER_AC_STANDBY_TIME, value); }
-function REGDcStandbyTime(value) { getWriteModusValue(REGISTER_DC_STANDBY_TIME, value); }
-function REGUsbStandbyTime(value) { getWriteModusValue(REGISTER_USB_STANDBY_TIME, value); }
-function REGSleepTime(value) { getWriteModusValue(REGISTER_SLEEP_TIME, value); }
+function REGDischargeLowerLimit(value) { return getWriteModusValue(REGISTER_DISCHARGE_LIMIT, value); }
+function REGChargeUpperLimit(value) { return getWriteModusValue(REGISTER_CHARGING_LIMIT, value); }
+function REGStopChargeAfter(value) { return getWriteModusValue(REGISTER_STOP_CHARGE_AFTER, value); }
+function REGMaxChargeCurrent(value) { return getWriteModusValue(REGISTER_MAXIMUM_CHARGING_CURRENT, value); }
+function REGScreenRestTime(value) { return getWriteModusValue(REGISTER_SCREEN_REST_TIME, value); }
+function REGAcStandbyTime(value) { return getWriteModusValue(REGISTER_AC_STANDBY_TIME, value); }
+function REGDcStandbyTime(value) { return getWriteModusValue(REGISTER_DC_STANDBY_TIME, value); }
+function REGUsbStandbyTime(value) { return getWriteModusValue(REGISTER_USB_STANDBY_TIME, value); }
+function REGSleepTime(value) { return getWriteModusValue(REGISTER_SLEEP_TIME, value); }
 
 module.exports = {
     REGRequestSettings,
