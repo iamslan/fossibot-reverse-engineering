@@ -190,7 +190,9 @@ SydpowerConnector.prototype.getDeviceData = function (accessToken, devicesMacs, 
             console.log(`Subscribed to topics '${subscribeTopics}'`)
         })   
         devicesMacs.forEach(deviceMac => {
-            that.mqttPublish(deviceMac, new Uint8Array(REGISTERS["REGRequestSettings"]));
+            setInterval(() => {
+                that.mqttPublish(deviceMac, new Uint8Array(REGISTERS["REGRequestSettings"]));
+            }, 2000);
         });
     });
     that.mqttClient.on('message', (topic, message) => {
@@ -243,9 +245,6 @@ SydpowerConnector.prototype.runCommand = async function (deviceId, command, valu
             var message;
             if (typeof REGISTERS[command] == "function") {
                 message = REGISTERS[command](value);
-                setTimeout(function() {
-                    that.mqttPublish(deviceId, new Uint8Array(REGISTERS["REGRequestSettings"]));
-                }, 1000);
             } else {
                 message = REGISTERS[command];
             }
