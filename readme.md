@@ -32,3 +32,18 @@ For example, passing 0 to "whole machine unused time" will brick the device (I b
 	    Commands and available values are listed in file ``sydpower-registers.js`` 
 		Example: ``REGEnableACOutput``
 
+# Home Assistant
+
+While waiting for a complete integration to be developped, you can run this nodejs application somewhere and fetch data with home assistant.
+
+Use Home Assistant RESTful integration to do so.
+
+A sample yaml is available: ``ha_rest.yaml``
+
+![Sensors from RESTful](images/entities.png "Sensors from RESTful")
+
+You can then have values and commands on lovelace 
+
+![Lovelace dashboard](images/lovelace.png "Lovelace dashboard")
+
+To call commands, just use in an action or automation one command, for example: ``rest_command.set_fossibot_xxxxx_enable_ac_output``

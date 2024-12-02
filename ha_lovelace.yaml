@@ -1,0 +1,13 @@
+- type: grid
+  cards:
+    - type: heading
+      heading: Fossibot XXXXX
+      heading_style: title
+    - type: tile
+      entity: sensor.fossibot_xxxxx_ac_output
+    - type: gauge
+      entity: sensor.fossibot_xxxxx_soc
+    - type: tile
+      entity: sensor.fossibot_xxxxx_total_input
+    - type: tile
+      entity: sensor.fossibot_xxxxx_total_output
